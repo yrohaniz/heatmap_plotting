@@ -1,0 +1,31 @@
+all : program clean run plot epstopdf open
+ 
+CC = gcc # Use gcc
+CFLAGS = -g -Wall -std=c11 # Compile-time flags 
+PLOTFILES = heatmap.gnuplot
+OUTFILES = ls *eps
+PLOT = gnuplot
+CONVERT = | xargs -n 1 epstopdf
+
+program: read.o
+	$(CC) read.o -o out 
+
+read.o: read.c
+	$(CC) $(CFLAGS) -c read.c
+	
+run:
+	./out
+
+clean:
+	rm -rf *o
+	rm -f *.pdf
+	
+plot:
+	$(PLOT) $(PLOTFILES)
+
+epstopdf:
+	$(OUTFILES) $(CONVERT)
+	rm -f *.eps
+	
+#open:
+	#evince *.pdf
